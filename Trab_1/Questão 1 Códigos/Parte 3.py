@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 # Parâmetros do problema
 max_int = 10000  # Número máximo de iterações
 max_viz = 50     # Número máximo de vizinhanças
-epsilon = 0.16    # Tamanho da perturbação para o Hill Climbing
+epsilon = 0.16   # Tamanho da perturbação para o Hill Climbing
 sigma = 0.1      # Tamanho da perturbação para Busca Randômica Local
 delta = 2.0      # Tamanho da perturbação para Busca Randômica Global
 
@@ -22,12 +22,15 @@ def F_Obj(x1, x2):
 # Hill Climbing
 rodadas = 100
 x_otimos_hill = []
+count = 0
+
 for rodada in range(rodadas):
     i = 0
     melhoria = True
     x_otm = limits_x[0]
     y_otm = limits_y[0]
     f_otm = F_Obj(x_otm, y_otm)
+    last_value = f_otm
     
     while i < max_int and melhoria:
         j = 0
@@ -42,7 +45,11 @@ for rodada in range(rodadas):
                 f_otm = f_cand
                 melhoria = True
                 break
+            if count == 25:
+                if np.abs(last_value - f_otm) < 0.0000001:
+                    break
             j += 1
+            count +=1
         i += 1
     x_otimos_hill.append([x_otm, y_otm])
 
@@ -50,12 +57,14 @@ x_otimos_hill = np.array(x_otimos_hill)
 
 # Busca Randômica Local
 x_otimos_local = []
+count = 0
 for rodada in range(rodadas):
     i = 0
     melhoria = True
     x_otm = np.random.uniform(*limits_x)
     y_otm = np.random.uniform(*limits_y)
     f_otm = F_Obj(x_otm, y_otm)
+    last_value = f_otm
     
     while i < max_int and melhoria:
         x_cand = perturb(x_otm, sigma, limits_x)
@@ -65,6 +74,9 @@ for rodada in range(rodadas):
             x_otm = x_cand
             y_otm = y_cand
             f_otm = f_cand
+        if count == 25:
+                if np.abs(last_value - f_otm) < 0.0000001:
+                    break
         i += 1
     x_otimos_local.append([x_otm, y_otm])
 
@@ -72,12 +84,14 @@ x_otimos_local = np.array(x_otimos_local)
 
 # Busca Randômica Global
 x_otimos_global = []
+count = 0
 for rodada in range(rodadas):
     i = 0
     melhoria = True
     x_otm = np.random.uniform(*limits_x)
     y_otm = np.random.uniform(*limits_y)
     f_otm = F_Obj(x_otm, y_otm)
+    last_value = f_otm
     
     while i < max_int and melhoria:
         x_cand = perturb(x_otm, delta, limits_x)
@@ -87,6 +101,9 @@ for rodada in range(rodadas):
             x_otm = x_cand
             y_otm = y_cand
             f_otm = f_cand
+        if count == 25:
+                if np.abs(last_value - f_otm) < 0.0000001:
+                    break
         i += 1
     x_otimos_global.append([x_otm, y_otm])
 
