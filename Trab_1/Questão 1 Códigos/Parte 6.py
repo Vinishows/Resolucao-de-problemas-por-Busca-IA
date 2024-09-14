@@ -6,7 +6,6 @@ max_int = 10000  # Número máximo de iterações
 max_viz = 50     # Número máximo de vizinhanças
 epsilon = .05    # Tamanho da perturbação para o Hill Climbing
 sigma = .1      # Tamanho da perturbação para Busca Randômica Local
-delta = 2      # Tamanho da perturbação para Busca Randômica Global
     
 limits_x = [-1, 3]  # Limites para x1
 limits_y = [-1, 3]  # Limites para x2
@@ -23,7 +22,6 @@ def F_Obj(x1, x2):
 rodadas = 100
 x_otimos_hill = []
 count = 0
-
 for rodada in range(rodadas):
     i = 0
     melhoria = True
@@ -61,22 +59,23 @@ count = 0
 for rodada in range(rodadas):
     i = 0
     melhoria = True
-    x_otm = np.random.uniform(*limits_x)
-    y_otm = np.random.uniform(*limits_y)
+    x_anc = np.random.uniform(*limits_x)
+    y_anc = np.random.uniform(*limits_y)
+    x_otm, y_otm = x_anc, y_anc
     f_otm = F_Obj(x_otm, y_otm)
     last_value = f_otm
     
     while i < max_int and melhoria:
-        x_cand = perturb(x_otm, sigma, limits_x)
-        y_cand = perturb(y_otm, sigma, limits_y)
+        x_cand = perturb(x_anc, sigma, limits_x)
+        y_cand = perturb(y_anc, sigma, limits_y)
         f_cand = F_Obj(x_cand, y_cand)
         if f_cand > f_otm:  # Maximização
             x_otm = x_cand
             y_otm = y_cand
             f_otm = f_cand
-        if count == 25:
-                if np.abs(last_value - f_otm) < 0.0000001:
-                    break
+        if count == 25 and np.abs(last_value - f_otm) < 0.0000001:
+            break
+        count +=1
         i += 1
     x_otimos_local.append([x_otm, y_otm])
 
@@ -94,20 +93,35 @@ for rodada in range(rodadas):
     last_value = f_otm
     
     while i < max_int and melhoria:
-        x_cand = perturb(x_otm, delta, limits_x)
-        y_cand = perturb(y_otm, delta, limits_y)
+        x_cand = np.random.uniform(*limits_x)
+        y_cand = np.random.uniform(*limits_y)
         f_cand = F_Obj(x_cand, y_cand)
         if f_cand > f_otm:  # Maximização
             x_otm = x_cand
             y_otm = y_cand
             f_otm = f_cand
-        if count == 25:
-                if np.abs(last_value - f_otm) < 0.0000001:
-                    break
+        if count == 25 and np.abs(last_value - f_otm) < 0.0000001:
+            break
+        count +=1
         i += 1
     x_otimos_global.append([x_otm, y_otm])
 
 x_otimos_global = np.array(x_otimos_global)
+
+#Calculo da moda
+def moda_np(arr):
+    tuples = [tuple(row) for row in arr]
+    unique, counts = np.unique(tuples, axis=0, return_counts=True)
+    moda_index = np.argmax(counts)
+    return unique[moda_index]
+
+moda_hill = moda_np(x_otimos_hill)
+moda_LRS = moda_np(x_otimos_local)
+moda_GRS = moda_np(x_otimos_global)
+
+print("Moda Hill Climbing:", moda_hill)
+print("Moda LRS:", moda_LRS)
+print("Moda GRS:", moda_GRS)
 
 # Plotagem da superfície 3D
 x1_vals = np.linspace(-1, 3, 400)
