@@ -21,6 +21,7 @@ def F_Obj(x1, x2):
 # Hill Climbing
 rodadas = 100
 x_otimos_hill = []
+f_otimos_hill = []
 count = 0
 for rodada in range(rodadas):
     i = 0
@@ -37,7 +38,7 @@ for rodada in range(rodadas):
             x_cand = perturb(x_otm, epsilon, limits_x)
             y_cand = perturb(y_otm, epsilon, limits_y)
             f_cand = F_Obj(x_cand, y_cand)
-            if f_cand > f_otm:   # Maximização
+            if f_cand > f_otm:  # Maximização
                 x_otm = x_cand
                 y_otm = y_cand
                 f_otm = f_cand
@@ -50,11 +51,13 @@ for rodada in range(rodadas):
             count +=1
         i += 1
     x_otimos_hill.append([x_otm, y_otm])
+    f_otimos_hill.append(f_otm)
 
 x_otimos_hill = np.array(x_otimos_hill)
 
 # Busca Randômica Local
 x_otimos_local = []
+f_otimos_local = []
 count = 0
 for rodada in range(rodadas):
     i = 0
@@ -78,11 +81,13 @@ for rodada in range(rodadas):
         count +=1
         i += 1
     x_otimos_local.append([x_otm, y_otm])
+    f_otimos_local.append(f_otm)
 
 x_otimos_local = np.array(x_otimos_local)
 
 # Busca Randômica Global
 x_otimos_global = []
+f_otimos_global = []
 count = 0
 for rodada in range(rodadas):
     i = 0
@@ -105,23 +110,19 @@ for rodada in range(rodadas):
         count +=1
         i += 1
     x_otimos_global.append([x_otm, y_otm])
+    f_otimos_global.append(f_otm)
 
 x_otimos_global = np.array(x_otimos_global)
 
 #Calculo da moda
 def moda_np(arr):
-    tuples = [tuple(row) for row in arr]
-    unique, counts = np.unique(tuples, axis=0, return_counts=True)
+    unique, counts = np.unique(arr, return_counts=True)
     moda_index = np.argmax(counts)
     return unique[moda_index]
 
-moda_hill = moda_np(x_otimos_hill)
-moda_LRS = moda_np(x_otimos_local)
-moda_GRS = moda_np(x_otimos_global)
-
-print("Moda Hill Climbing:", moda_hill)
-print("Moda LRS:", moda_LRS)
-print("Moda GRS:", moda_GRS)
+print("Moda Hill Climbing (f_otm):", moda_np(f_otimos_hill))
+print("Moda LRS (f_otm):", moda_np(f_otimos_local))
+print("Moda GRS (f_otm):", moda_np(f_otimos_global))
 
 # Plotagem da superfície 3D
 x1_vals = np.linspace(-1, 3, 400)
@@ -136,33 +137,21 @@ ax1 = fig.add_subplot(131, projection='3d')
 ax1.plot_surface(X1, X2, Z, cmap='viridis', alpha=.3)
 for i in range(len(x_otimos_hill)):
     ax1.scatter(x_otimos_hill[i, 0], x_otimos_hill[i, 1], F_Obj(*x_otimos_hill[i]),marker='o')
-ax1.set_xlabel('X1')
-ax1.set_ylabel('X2')
-ax1.set_zlabel('F_Obj(X1, X2)')
 ax1.set_title('Hill Climbing')
-ax1.legend()
 
 # Gráfico Busca Randômica Local
 ax2 = fig.add_subplot(132, projection='3d')
 ax2.plot_surface(X1, X2, Z, cmap='viridis', alpha=.3)
 for i in range(len(x_otimos_local)):
     ax2.scatter(x_otimos_local[i, 0], x_otimos_local[i, 1], F_Obj(*x_otimos_local[i]),marker='x')
-ax2.set_xlabel('X1')
-ax2.set_ylabel('X2')
-ax2.set_zlabel('F_Obj(X1, X2)')
 ax2.set_title('Busca Randômica Local')
-ax2.legend()
 
 # Gráfico Busca Randômica Global
 ax3 = fig.add_subplot(133, projection='3d')
 ax3.plot_surface(X1, X2, Z, cmap='viridis', alpha=.3)
 for i in range(len(x_otimos_global)):
     ax3.scatter(x_otimos_global[i, 0], x_otimos_global[i, 1], F_Obj(*x_otimos_global[i]),marker='*')
-ax3.set_xlabel('X1')
-ax3.set_ylabel('X2')
-ax3.set_zlabel('F_Obj(X1, X2)')
 ax3.set_title('Busca Randômica Global')
-ax3.legend()
 
 plt.tight_layout()
 plt.show()

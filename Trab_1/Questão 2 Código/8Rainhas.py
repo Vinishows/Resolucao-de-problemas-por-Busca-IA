@@ -43,7 +43,7 @@ def tempera(T: float = 1, max_iters: int = 100) -> np.ndarray:
 
         T = T * .99
         #T/(1+0.99*np.sqrt(T))
-        #T - ((100 - T)/i)
+        #T - ((1 - T)/i)
     
     return x_otm
 
@@ -53,11 +53,8 @@ while True:
 
     if len(todas_solucoes) >= 92:
         break
-
     solucao = tempera()
-
     string = "".join([str(digito) for digito in solucao])
-
     todas_solucoes.add(string)
 
 print(todas_solucoes)
