@@ -14,6 +14,10 @@ limits_y = [-100, 100]
 def perturb(x, e, limits):
     return np.clip(np.random.uniform(x-e, x+e), *limits)
 
+# Função de perturbação normal
+def perturb_normal(x, e, limits):
+    return np.clip(x+np.random.normal(loc=0,scale=e), *limits)
+
 # Função objetivo
 def F_Obj(x1, x2):
     return (x1**2) + (x2**2)
@@ -30,7 +34,7 @@ for rodada in range(rodadas):
     y_otm = limits_y[0]
     f_otm = F_Obj(x_otm, y_otm)
     last_value = f_otm
-    
+
     while i < max_int and melhoria:
         j = 0
         melhoria = False
@@ -62,15 +66,13 @@ count = 0
 for rodada in range(rodadas):
     i = 0
     melhoria = True
-    x_anc = np.random.uniform(*limits_x)
-    y_anc = np.random.uniform(*limits_y)
-    x_otm, y_otm = x_anc, y_anc
+    x_otm, y_otm = np.random.uniform(*limits_x), np.random.uniform(*limits_y)
     f_otm = F_Obj(x_otm, y_otm)
     last_value = f_otm
     
     while i < max_int and melhoria:
-        x_cand = perturb(x_anc, sigma, limits_x)
-        y_cand = perturb(y_anc, sigma, limits_y)
+        x_cand = perturb_normal(x_cand, sigma, limits_x)
+        y_cand = perturb_normal(y_cand, sigma, limits_y)
         f_cand = F_Obj(x_cand, y_cand)
         if f_cand < f_otm:  # Minimização
             x_otm = x_cand

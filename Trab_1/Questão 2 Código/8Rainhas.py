@@ -20,7 +20,7 @@ def F_Apt(posicoes):
     return 28 - ataques
 
 def tempera(T: float = 1, max_iters: int = 100) -> np.ndarray:
-
+    T0 = T
     x_otm = np.random.permutation([0, 1, 2, 3, 4, 5, 6, 7])
     f_otm = F_Apt(x_otm)
 
@@ -43,8 +43,8 @@ def tempera(T: float = 1, max_iters: int = 100) -> np.ndarray:
 
         T = T * .99
         #T/(1+0.99*np.sqrt(T))
-        #T - ((1 - T)/i)
-    
+        #T - ((T0 - T)/i)
+
     return x_otm
 
 todas_solucoes = set()
