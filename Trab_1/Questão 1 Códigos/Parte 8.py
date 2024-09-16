@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 # Parâmetros do problema
 max_int = 10000  # Número máximo de iterações
 max_viz = 50     # Número máximo de vizinhanças
-epsilon = .2    # Tamanho da perturbação para o Hill Climbing
-sigma = .1      # Tamanho da perturbação para Busca Randômica Local
-    
+epsilon = .2     # Tamanho da perturbação para o Hill Climbing
+sigma = .1       # Tamanho da perturbação para Busca Randômica Local
+
 limits_x = [-200, 20]  # Limites para x1
 limits_y = [-200, 20]  # Limites para x2
 
-# Função de perturbação (aleatória)
+# Função de perturbação (aleatória):
 def perturb(x, e, limits):
     return np.clip(np.random.uniform(x-e, x+e), *limits)
 

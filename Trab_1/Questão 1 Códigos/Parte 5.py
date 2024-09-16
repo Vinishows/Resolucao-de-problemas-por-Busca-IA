@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 # Parâmetros do problema
 max_int = 10000  # Número máximo de iterações
 max_viz = 50     # Número máximo de vizinhanças
-epsilon = .2    # Tamanho da perturbação para o Hill Climbing
-sigma = .1      # Tamanho da perturbação para Busca Randômica Local
+epsilon = .2     # Tamanho da perturbação para o Hill Climbing
+sigma = .1       # Tamanho da perturbação para Busca Randômica Local
     
 limits_x = [-10, 10]  # Limites para x1
 limits_y = [-10, 10]  # Limites para x2

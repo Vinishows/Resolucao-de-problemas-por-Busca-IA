@@ -1,9 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def perturb_parcimonioso(x, sigma: float = 1):
-    
-    # swap de índices
+def perturb_parcimonioso(x):
     i, j = np.random.randint(0, 7, size = 2)
     x[i], x[j] = x[j], x[i]
     return x
@@ -20,35 +18,36 @@ def F_Apt(posicoes):
     return 28 - ataques
 
 def tempera(T: float = 1, max_iters: int = 100) -> np.ndarray:
+    i = 0
     T0 = T
-    x_otm = np.random.permutation([0, 1, 2, 3, 4, 5, 6, 7])
+    x_otm = np.random.permutation([0,1,2,3,4,5,6,7])
     f_otm = F_Apt(x_otm)
 
-    i = 0
-
     while i < max_iters:
-
         if f_otm == 28:
             break
 
         x_cand = perturb_parcimonioso(x_otm)
         f_cand = F_Apt(x_cand)
-
         p_ij = np.exp(-(f_otm - f_cand) / T)
 
-        if (f_cand > f_otm) or (p_ij >= np.random.uniform(0, 1)):
+        if (f_cand > f_otm) or (p_ij >= np.random.uniform(0,1)):
             
             x_otm = x_cand
             f_otm = f_cand
 
+        #Escalonamento Exponencial
         T = T * .99
+        
+        #Escalonamento Baseado em Raiz Quadrada
         #T/(1+0.99*np.sqrt(T))
-        #T - ((T0 - T)/i)
+        
+        #Escalonamento Linear
+        #T - ((T0 - 0.1)/max_iters)
 
     return x_otm
 
 todas_solucoes = set()
-
 while True:
 
     if len(todas_solucoes) >= 92:
