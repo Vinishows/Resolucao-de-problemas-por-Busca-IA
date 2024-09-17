@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 def perturb_parcimonioso(x):
     i, j = np.random.randint(0, 7, size = 2)
@@ -47,6 +48,8 @@ def tempera(T: float = 1, max_iters: int = 100) -> np.ndarray:
 
     return x_otm
 
+start_time = time.time()
+
 todas_solucoes = set()
 while True:
 
@@ -55,5 +58,9 @@ while True:
     solucao = tempera()
     string = "".join([str(digito) for digito in solucao])
     todas_solucoes.add(string)
+    
+end_time = time.time()
+execution_time = end_time - start_time
 
 print(todas_solucoes)
+print(f"Tempo total de execução: {execution_time:.4f} segundos")

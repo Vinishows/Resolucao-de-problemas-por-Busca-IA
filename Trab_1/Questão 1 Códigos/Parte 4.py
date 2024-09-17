@@ -136,21 +136,21 @@ fig = plt.figure(figsize=(18, 6))
 
 # Gráfico Hill Climbing
 ax1 = fig.add_subplot(131, projection='3d')
-ax1.plot_surface(X1, X2, Z, cmap='viridis', alpha=.3)
+ax1.plot_surface(X1, X2, Z, cmap='viridis', alpha=.1)
 for i in range(len(x_otimos_hill)):
     ax1.scatter(x_otimos_hill[i, 0], x_otimos_hill[i, 1], F_Obj(*x_otimos_hill[i]),marker='o')
 ax1.set_title('Hill Climbing')
 
 # Gráfico Busca Randômica Local
 ax2 = fig.add_subplot(132, projection='3d')
-ax2.plot_surface(X1, X2, Z, cmap='viridis', alpha=.3)
+ax2.plot_surface(X1, X2, Z, cmap='viridis', alpha=.1)
 for i in range(len(x_otimos_local)):
     ax2.scatter(x_otimos_local[i, 0], x_otimos_local[i, 1], F_Obj(*x_otimos_local[i]),marker='x')
 ax2.set_title('Busca Randômica Local')
 
 # Gráfico Busca Randômica Global
 ax3 = fig.add_subplot(133, projection='3d')
-ax3.plot_surface(X1, X2, Z, cmap='viridis', alpha=.3)
+ax3.plot_surface(X1, X2, Z, cmap='viridis', alpha=.1)
 for i in range(len(x_otimos_global)):
     ax3.scatter(x_otimos_global[i, 0], x_otimos_global[i, 1], F_Obj(*x_otimos_global[i]),marker='*')
 ax3.set_title('Busca Randômica Global')
