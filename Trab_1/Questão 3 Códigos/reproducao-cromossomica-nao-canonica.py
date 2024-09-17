@@ -87,7 +87,7 @@ for chamada in range(Chamadas):
         #selection = Selection(Pop, aptabilities)  
         #Pop = Reproduce(Selection(Pop, aptabilities))  
     
-    #calcula as aptidões da última população
+    #calcula as aptidões da última população    
     #fitness_values = [f(ind) for ind in Pop]
 
     # menor_aptidao = np.min(fitness_values)
