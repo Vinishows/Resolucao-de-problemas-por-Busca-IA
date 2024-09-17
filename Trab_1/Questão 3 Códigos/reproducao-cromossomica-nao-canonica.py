@@ -17,30 +17,17 @@ def f(x):
     soma = np.sum(x**2 - A * np.cos(2 * np.pi * x))
     return A * len(x) + soma + 1 # soma + 1 para  Ψ(x) = f(x) + 1
 
-#calcula as aptidões (probabilidades) para cada indivíduo da população
-# def Aptabilities(pop):
-#     p = []
-#     s = 0
-#     for ind in pop:
-#         s += log(ind)
-#     for ind in pop:
-#         p.append(log(ind) / s)
-#     return np.array(p)
-
 #seleção baseada em torneio
-def Selection(pop, k=3):
-    selecionados = []
-    for _ in range(len(pop)):
-        competidores = np.random.choice(pop, k)
-        melhor = min(competidores, key=f)
-        selecionados.append(melhor)
-    return np.array(selecionados)
+def Selection(pop, aptabilities, k=3):
+    competidores_idx = np.random.choice(len(pop), k, replace=False)  
+    melhor = competidores_idx[np.argmin(np.array(aptabilities)[competidores_idx])]
+    return pop[melhor]
 
 def SBX(p1, p2, eta=2):
-    u = np.random.rand(len(p1))  
+    u = np.random.uniform(size=len(p1))
     gamma = np.empty(len(p1))  
     
-    for i in range(len(p1)):  
+    for i in range(P):  
         if u[i] <= 0.5:
             gamma[i] = (2 * u[i]) ** (1 / (eta + 1)) 
         else:
@@ -51,56 +38,67 @@ def SBX(p1, p2, eta=2):
     
     return np.clip(c1, *limits), np.clip(c2, *limits)
 
-def Cruz_Mut(x1, x2):
-    a1 = np.random.randint(0, 2, len(x1))
-    a2 = list(zip(x1, x2))
-    c1, c2 = [], []
-    for i in range(len(a2)):
-        c1.append(a2[i][a1[i]])
-        c2.append(a2[i][not a1[i]])
-    for i in range(len(a2)):
-        rnd_1 = np.random.uniform()
-        rnd_2 = np.random.uniform()
-        if rnd_1 < mut_tax:
-            c1[i] = not c1[i]
-        if rnd_2 < mut_tax:
-            c2[i] = not c2[i]
-    return np.array(c1), np.array(c2)
+def Cruz_Mut(indv):
+    perturbacoes = np.random.normal(0, .1, size=20)
+    for index in range(len(indv)) :
+        chance = np.random.rand()
+        if chance <= mut_tax:
+            indv[index] += perturbacoes[index]
+            indv[index] = np.clip(indv[index], limits[0], limits[1])  
+    return indv
 
-def Reproduce(pop):
+def Reproduce(pop, aptabilities):
     p = []
-    for i in range(0, len(pop), 2):
-        if np.random.uniform() < rep_tax:
-            c1, c2 = Cruz_Mut(pop[i], pop[i+1])
-            p.extend([c1, c2])
+    for i in range(len(pop) // 2):
+        daddy = Selection(pop, aptabilities)
+        issues = Selection(pop, aptabilities)
+        
+        if np.random.rand() < rep_tax:
+            fih1, fih2 = SBX(daddy, issues)
         else:
-            p.extend([pop[i], pop[i+1]])
+            fih1, fih2 = np.copy(daddy), np.copy(issues)
+        
+        fih1 = Cruz_Mut(fih1)
+        fih2 = Cruz_Mut(fih2)
+        
+        p.extend([fih1, fih2])
+        
     return np.array(p)
 
 
-Pop = np.random.uniform(low=limits[0], high=limits[1], size=(N, P)) #inicializa a população aleatória (binária) de N indivíduos, cada um com nd * P bits
-Chamadas = 100  
 
+# Pop = np.random.uniform(low=limits[0], high=limits[1], size=(P)) #inicializa a população aleatória (binária) de N indivíduos, cada um com nd * P bits
+# gerar inidividuo
+def inidvi():
+    return np.random.uniform(low=limits[0], high=limits[1], size=(P))
+
+Pop = np.array([inidvi() for _ in range(100)])
+
+Chamadas = 100
+
+count = 0
 for chamada in range(Chamadas):
     for t in range(T):  
-        #aptabilities = Aptabilities(Pop)  
-        #selection = Selection(Pop, aptabilities)  
-        #Pop = Reproduce(Selection(Pop, aptabilities))  
-    
-    #calcula as aptidões da última população    
-    #fitness_values = [f(ind) for ind in Pop]
+        aptabilities = np.array([f(ind) for ind in Pop])
+        Pop = Reproduce(Pop, aptabilities)
 
-    # menor_aptidao = np.min(fitness_values)
-    # maior_aptidao = np.max(fitness_values)
-    # media_aptidao = np.mean(fitness_values)
-    # desvio_padrao_aptidao = np.std(fitness_values)
+        if count == 15:
+            if np.abs(last_value - min(aptabilities)) < 10e-9:
+                break
+            else:
+                count = 0
+        last_value = min(aptabilities)
+        count += 1
 
-    # print(f"Chamada {chamada + 1}:")
-    # print(f"Menor aptidão: {menor_aptidao}")
-    # print(f"Maior aptidão: {maior_aptidao}")
-    # print(f"Média aptidão: {media_aptidao}")
-    # print(f"Desvio padrão aptidão: {desvio_padrao_aptidao}")
-        print("-" * 40)
-    
-    
-    
+
+    menor_aptidao = np.min(aptabilities)
+    maior_aptidao = np.max(aptabilities)
+    media_aptidao = np.mean(aptabilities)
+    desvio_padrao_aptidao = np.std(aptabilities)
+
+    print(f"Chamada {chamada + 1}:")
+    print(f"Menor aptidão: {menor_aptidao}")
+    print(f"Maior aptidão: {maior_aptidao}")
+    print(f"Média aptidão: {media_aptidao}")
+    print(f"Desvio padrão aptidão: {desvio_padrao_aptidao}")
+    print("-" * 40)
