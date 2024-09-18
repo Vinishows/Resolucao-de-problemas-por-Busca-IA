@@ -81,14 +81,22 @@ def Reproduce(pop):
 
 
 Pop = np.random.randint(0, 2, size=(N, nd * P)) #inicializa a população aleatória (binária) de N indivíduos, cada um com nd * P bits
-Chamadas = 100  
-resultados = []
+Chamadas = 100
+count = 0
 for chamada in range(Chamadas):
     for t in range(T):  
         aptabilities = Aptabilities(Pop)  
         selection = Selection(Pop, aptabilities)  
         Pop = Reproduce(Selection(Pop, aptabilities))  
     
+        if count == 15:
+            if np.abs(last_value - min(aptabilities)) < 10e-9:
+                break
+            else:
+                count = 0
+        last_value = min(aptabilities)
+        count += 1
+        
     #calcula as aptidões da última população
     fitness_values = [f(ind) for ind in Pop]
 
@@ -96,27 +104,10 @@ for chamada in range(Chamadas):
     maior_aptidao = np.max(fitness_values)
     media_aptidao = np.mean(fitness_values)
     desvio_padrao_aptidao = np.std(fitness_values)
-    # Armazena os resultados de cada rodada
-    resultados.append([menor_aptidao, maior_aptidao, media_aptidao, desvio_padrao_aptidao])
-
+    
     print(f"Chamada {chamada + 1}:")
     print(f"Menor aptidão: {menor_aptidao}")
     print(f"Maior aptidão: {maior_aptidao}")
     print(f"Média aptidão: {media_aptidao}")
     print(f"Desvio padrão aptidão: {desvio_padrao_aptidao}")
     print("-" * 40)
-
-# Gera a tabela de comparação
-resultados = np.array(resultados)
-tabela = {
-    "Menor Aptidão": resultados[:, 0],
-    "Maior Aptidão": resultados[:, 1],
-    "Média Aptidão": resultados[:, 2],
-    "Desvio Padrão Aptidão": resultados[:, 3],
-}
-
-# Exibe as estatísticas finais consolidadas
-print(f"Menor valor de aptidão em todas as rodadas: {np.min(resultados[:, 0])}")
-print(f"Maior valor de aptidão em todas as rodadas: {np.max(resultados[:, 1])}")
-print(f"Média dos valores de aptidão: {np.mean(resultados[:, 2])}")
-print(f"Desvio padrão dos valores de aptidão: {np.mean(resultados[:, 3])}")

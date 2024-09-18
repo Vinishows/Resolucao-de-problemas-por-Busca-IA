@@ -67,11 +67,8 @@ def inidvi():
     return np.random.uniform(low=limits[0], high=limits[1], size=(P))
 
 Pop = np.array([inidvi() for _ in range(100)])
-
 Chamadas = 100
-
 count = 0
-resultados = []
 for chamada in range(Chamadas):
     for t in range(T):  
         aptabilities = np.array([f(ind) for ind in Pop])
@@ -90,8 +87,6 @@ for chamada in range(Chamadas):
     maior_aptidao = np.max(aptabilities)
     media_aptidao = np.mean(aptabilities)
     desvio_padrao_aptidao = np.std(aptabilities)
-    # Armazena os resultados de cada rodada
-    resultados.append([menor_aptidao, maior_aptidao, media_aptidao, desvio_padrao_aptidao])
 
     print(f"Chamada {chamada + 1}:")
     print(f"Menor aptidão: {menor_aptidao}")
@@ -99,18 +94,3 @@ for chamada in range(Chamadas):
     print(f"Média aptidão: {media_aptidao}")
     print(f"Desvio padrão aptidão: {desvio_padrao_aptidao}")
     print("-" * 40)
-    
-    # Gera a tabela de comparação
-resultados = np.array(resultados)
-tabela = {
-    "Menor Aptidão": resultados[:, 0],
-    "Maior Aptidão": resultados[:, 1],
-    "Média Aptidão": resultados[:, 2],
-    "Desvio Padrão Aptidão": resultados[:, 3],
-}
-
-# Exibe as estatísticas finais consolidadas
-print(f"Menor valor de aptidão em todas as rodadas: {np.min(resultados[:, 0])}")
-print(f"Maior valor de aptidão em todas as rodadas: {np.max(resultados[:, 1])}")
-print(f"Média dos valores de aptidão: {np.mean(resultados[:, 2])}")
-print(f"Desvio padrão dos valores de aptidão: {np.mean(resultados[:, 3])}")
