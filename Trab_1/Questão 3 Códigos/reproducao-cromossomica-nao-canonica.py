@@ -8,9 +8,6 @@ P = 20   # quantidade de dimensões (variáveis) de cada indivíduo
 limits = [-10, 10]  
 rep_tax, mut_tax = 0.90, 0.01  
 
-# def log(ind):
-#     return (np.log(10) / np.log(f(ind)))**30
-
 #função de rastrigin
 def f(x):
     A = 10
@@ -66,9 +63,6 @@ def Reproduce(pop, aptabilities):
     return np.array(p)
 
 
-
-# Pop = np.random.uniform(low=limits[0], high=limits[1], size=(P)) #inicializa a população aleatória (binária) de N indivíduos, cada um com nd * P bits
-# gerar inidividuo
 def inidvi():
     return np.random.uniform(low=limits[0], high=limits[1], size=(P))
 
